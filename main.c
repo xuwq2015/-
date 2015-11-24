@@ -23,23 +23,23 @@ struct mac_tou {
 	u_short types;	//帧类型
 };
 struct ip_tou {
-  u_char version;          //版本号
-  u_char ihl;              //ip首部
-  u_char tos;              //服务类型
-  u_short len;           //总长度
-  u_short id;            //标识
-  u_short frag;          //3位分段标志+13位分段偏移数
-  u_char ttl;              //数据报生存时间
-  u_char protocol;         //协议字段
-  u_short check;         //校验和
-  u_int saddr;         //源地址
+  	u_char version;          //版本号
+  	u_char ihl;              //ip首部
+  	u_char tos;              //服务类型
+  	u_short len;           //总长度
+  	u_short id;            //标识
+  	u_short frag;          //3位分段标志+13位分段偏移数
+  	u_char ttl;              //数据报生存时间
+  	u_char protocol;         //协议字段
+  	u_short check;         //校验和
+  	u_int saddr;         //源地址
 	u_int daddr;         //目的地址
 };
 
 void inttoip( int ip_num, char *ip )
 {
-    //strcpy( ip, (char*)inet_ntoa( htonl( ip_num ) ) );
-    struct in_addr addr;
+    	//strcpy( ip, (char*)inet_ntoa( htonl( ip_num ) ) );
+    	struct in_addr addr;
 	addr.s_addr = htonl(ip_num);
 	inet_ntop(AF_INET, (void *)&addr, ip, 16); 
 }
@@ -84,14 +84,14 @@ u_char *jiexi_mac(u_char *data, int len, struct mac_tou *mac_r) {
 	return ip_data;
 }
 
-int main(int argc, char **argv) {
-  int sock, n, i;
+int main(int argc, char *argv[]) {
+  	int sock, n, i;
 	char ip_addr[2048];
-  u_char buffer[2048];
+  	u_char buffer[2048];
 	u_char *unresolved;
-  struct ethhdr *eth;
-  struct iphdr *iph;
-  struct ifreq ethreq;
+  	struct ethhdr *eth;
+  	struct iphdr *iph;
+  	struct ifreq ethreq;
 
 	struct in_addr addr;
 
@@ -99,32 +99,32 @@ int main(int argc, char **argv) {
 	struct ip_tou ip_r;
 
 	/*创建原始套接字*/
-  if((sock=socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL)))<0) {
-    perror("socket");
-    exit(1);
-  }
+  	if((sock=socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL)))<0) {
+    		perror("socket");
+    		exit(1);
+  	}
 
 
- /* 修改网卡为混合模式*/
-  strncpy(ethreq.ifr_name,"eno16777736",IFNAMSIZ);
-  if (ioctl(sock,SIOCGIFFLAGS,&ethreq)==-1) {
-    perror("ioctl");
-    close(sock);
-    exit(1);
-  }
-  ethreq.ifr_flags|=IFF_PROMISC;
-  if (ioctl(sock,SIOCSIFFLAGS,&ethreq)==-1) {
-    perror("ioctl");
-    close(sock);
-    exit(1);
-  }
+ 	/* 修改网卡为混合模式*/
+  	strncpy(ethreq.ifr_name,"eno16777736",IFNAMSIZ);
+  	if (ioctl(sock,SIOCGIFFLAGS,&ethreq)==-1) {
+    		perror("ioctl");
+    		close(sock);
+    		exit(1);
+  	}
+  	ethreq.ifr_flags|=IFF_PROMISC;
+  	if (ioctl(sock,SIOCSIFFLAGS,&ethreq)==-1) {
+    		perror("ioctl");
+    		close(sock);
+    		exit(1);
+  	}
 
 	/*抓取网络数据包*/
-  while(1) {
+  	while(1) {
 		/*读取经过网卡的所有数据包，包括非发往本机的数据包*/
-    n = recvfrom(sock, buffer, 2048, 0, NULL, NULL);
+    		n = recvfrom(sock, buffer, 2048, 0, NULL, NULL);
 		unresolved = buffer;
-    printf("%d bytes read\n", n);
+    		printf("%d bytes read\n", n);
 		unresolved = jiexi_mac(unresolved, n, &mac_r);
 		printf("MAC目的地址:%x:%x:%x:%x:%x:%x\n", mac_r.daddr[0], mac_r.daddr[1], mac_r.daddr[2], mac_r.daddr[3],
 																							mac_r.daddr[4],mac_r.daddr[5]);
@@ -135,5 +135,5 @@ int main(int argc, char **argv) {
 		inet_ntop(AF_INET, (void *)&addr, ip_addr, 16);
 		printf("IP目的地址%s\n", ip_addr);
 	}
-  return 0;
+  	return 0;
 }
