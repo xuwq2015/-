@@ -1,5 +1,10 @@
 #include "./network_layer.h"
 
+void jiexi_network(struct frame_types *mac_r) {
+	unsigned char ip_data[MAC_MAX_LEN];
+	strncpy(ip_data, mac_r->data, MAC_MAX_LEN);
+}
+
 u_char *jiexi_ipv4(u_char *data, struct ip_v4 *ip_r) {
   ip_r->version = (data[0] & 0xF0) >> 4;
   ip_r->ihl = data[0] & 0x0F;

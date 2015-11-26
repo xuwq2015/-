@@ -1,5 +1,18 @@
 #include "./protocol_layer.h"
 
+void jiexi(unsigned char data[], int data_len) {
+	unsigned char *data_p = data;
+	struct frame_types frame_types;
+
+	jiexi_mac(data_p, data_len, &frame_types);
+
+	if(frame_types == ETHERNET_TYPES) {	//Ethernet II帧
+	} else if(frame_types == NOVELL_TYPES) {	//Novell Ether帧
+	} else if(frame_types == SNAP_TYPES) {	//Ethernet SNAP帧
+	} else if(frame_types == IEEE_TYPES) {	//802.3/802.2格式的帧
+	}
+}
+
 int get_tou(unsigned char data[], int data_len) {
 	unsigned char *data_p = data;
 	unsigned char ip_addr[CHAR_IP_LEN];
@@ -52,15 +65,6 @@ int get_tou(unsigned char data[], int data_len) {
 		strncpy(ipv6_addr.s6_addr, ipv6_r.source_addr, 16);                                             
 		inet_ntop(AF_INET6, (void *)&ipv6_addr.s6_addr, ipv6_addr_buf, INET6_ADDRSTRLEN);               
 		printf("IP mu_di_di_zhi%s\t", ipv6_addr_buf); 
-/*                                                                                                                
-		addr.sin_addr.s_addr = htonl(ip_r.daddr);                                                                     
-		inet_ntop(AF_INET, (void *)&addr, ip_addr, 16);                                                     
-		printf("IP mu_di_di_zhi%s\t", ip_addr);                                                             
-                                                                                                        
-		addr.sin_addr.s_addr = htonl(ip_r.saddr);                                                                     
-		inet_ntop(AF_INET, (void *)&addr, ip_addr, 16);                                                     
-		printf("IP yuan_di_zhi:%s\n", ip_addr);                                                             
-*/                                                                                                  
 	} else {                                                                                                        
 		printf("xie_yi_lei_xing: qita\t%x\n", mac_r.types);                                                              
    

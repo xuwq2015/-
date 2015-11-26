@@ -44,7 +44,8 @@ int main(int argc, char *argv[]) {
   while(1) {
 		/*读取经过网卡的所有数据包，包括非发往本机的数据包*/
     buffer_len = recvfrom(sock, buffer, 2048, 0, NULL, NULL);
-		get_tou(buffer, buffer_len);
+		//get_tou(buffer, buffer_len);
+		jiexi(buffer, buffer_len);
 	}
   return 0;
 }
